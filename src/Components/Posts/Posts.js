@@ -55,7 +55,7 @@ function Posts() {
               }}
             >
               <div className="favorite">
-                <Heart></Heart>
+                <Heart/>
               </div>
               <div className="image">
                 <img src={product.url} alt="" />
