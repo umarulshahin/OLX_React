@@ -13,16 +13,30 @@ function Posts() {
   const history = useHistory()
 
   useEffect(() => {
-    firebase.firestore().collection('products').get().then((snapshot) => {
-      const allPost = snapshot.docs.map((product) => {
-        return {
-          ...product.data(),
-          id: product.id
-        }
-      })
-      setProducts(allPost)
-    })
-  }, [])
+    const fetchData = async () => {
+      try {
+        // Wait for authentication state to be resolved
+        firebase.auth().onAuthStateChanged(async (user) => {
+          if (user) {
+            // User is authenticated, proceed to fetch data
+            const snapshot = await firebase.firestore().collection('products').get();
+            const allPost = snapshot.docs.map((product) => ({
+              ...product.data(),
+              id: product.id
+            }));
+            setProducts(allPost);
+          } else {
+            console.log('User is not authenticated');
+          }
+        });
+      } catch (error) {
+        console.error('Error fetching documents: ', error);
+      }
+    };
+    
+    fetchData();
+  }, []);
+
   return (
     <div className="postParentDiv">
       <div className="moreView">
